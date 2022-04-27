@@ -1,8 +1,8 @@
 import { createServer } from "net";
 
-const HOME_HEAD_REQUEST = "GET / HTTP/1.1";
+const HOME_REQUEST_HEAD = "GET / HTTP/1.1";
 
-const tcpServer = createServer((socket) => {
+const handleConnection = (socket) => {
     socket.on("error", (err) => {
         console.error(`err: ${err}`);
     });
@@ -11,7 +11,7 @@ const tcpServer = createServer((socket) => {
         const req = chunk.toString();
         const reqHead = req.split("\r\n")[0];
 
-        if (reqHead === HOME_HEAD_REQUEST) {
+        if (reqHead === HOME_REQUEST_HEAD) {
             const respBody = JSON.stringify({
                 msg: "Hello world",
             });
@@ -27,6 +27,8 @@ const tcpServer = createServer((socket) => {
 
         socket.end();
     });
-});
+};
+
+const tcpServer = createServer(handleConnection);
 
 tcpServer.listen(8000);
